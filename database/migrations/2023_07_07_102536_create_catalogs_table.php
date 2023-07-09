@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('list', function (Blueprint $table) {
+        Schema::create('catalogs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->string('list_name');
+            $table->uuid('uuid')->unique()->index();
+            $table->foreignUuid('user_uuid')->references('uuid')->on('users')->cascadeOnDelete();
+            $table->string('catalog_name');
+            $table->enum('status', ['active', 'completed', 'canceled'])->default('active');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('list');
+        Schema::dropIfExists('catalogs');
     }
 };

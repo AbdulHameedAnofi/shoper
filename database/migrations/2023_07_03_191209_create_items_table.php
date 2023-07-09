@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique()->index();
-            $table->foreignId('category_id')->references('id')->on('categories')->cascadeOnDelete();
+            $table->foreignUuid('category_uuid')->references('uuid')->on('categories')->cascadeOnDelete();
             $table->string('item_name');
             $table->text('note')->comment('Description of the item being inputed');
             $table->json('metadata');

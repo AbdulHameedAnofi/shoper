@@ -42,4 +42,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function catalog() {
+        return $this->hasMany(Catalog::class, 'uuid', 'user_uuid');
+    }
 }

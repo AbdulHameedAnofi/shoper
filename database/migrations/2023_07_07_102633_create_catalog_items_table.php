@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('list_items', function (Blueprint $table) {
+        Schema::create('catalog_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('item_id')->references('id')->on('items');
-            $table->foreignId('list_id')->references('id')->on('lists');
+            $table->uuid('uuid')->unique()->index();
+            $table->foreignUuid('item_uuid')->references('uuid')->on('items');
+            $table->foreignUuid('catalog_uuid')->references('uuid')->on('catalogs');
             $table->integer('quantity');
             $table->timestamps();
         });
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('list_items');
+        Schema::dropIfExists('catalog_items');
     }
 };
