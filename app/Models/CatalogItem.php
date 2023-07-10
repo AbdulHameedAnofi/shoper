@@ -16,4 +16,14 @@ class CatalogItem extends Model
         'catalog_uuid',
         'quantity'
     ];
+
+    public function catalog()
+    {
+        return $this->belongsTo(Catalog::class, 'catalog_uuid', 'uuid');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_uuid', 'uuid');
+    }
 }

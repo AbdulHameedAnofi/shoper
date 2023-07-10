@@ -44,6 +44,6 @@ class User extends Authenticatable
     ];
 
     public function catalog() {
-        return $this->hasMany(Catalog::class, 'uuid', 'user_uuid');
+        return $this->hasMany(Catalog::class, 'user_uuid', 'uuid');
     }
 }

@@ -12,9 +12,15 @@ class Files extends Model
 
     protected $fillable = [
         'uuid',
+        'item_uuid',
         'file_name',
         'path',
         'size',
         'type'
     ];
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_uuid', 'uuid');
+    }
 }

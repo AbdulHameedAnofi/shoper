@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique()->index();
+            $table->foreignUuid('item_uuid')->references('uuid')->on('items')->cascadeOnDelete();
             $table->string('file_name');
             $table->string('path')->comment('Link to the files location');
             $table->string('size');

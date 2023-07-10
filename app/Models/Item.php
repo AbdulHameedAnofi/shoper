@@ -21,4 +21,19 @@ class Item extends Model
     protected $cast = [
         'metadata' => 'array'
     ];
+
+    public function image()
+    {
+        return $this->hasOne(Files::class, 'item_uuid', 'uuid');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'item_uuid', 'uuid');
+    }
+
+    public function catalogItems()
+    {
+        return $this->hasMany(CatalogItem::class, 'item_uuid', 'uuid');
+    }
 }

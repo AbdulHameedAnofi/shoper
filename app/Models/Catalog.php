@@ -17,7 +17,12 @@ class Catalog extends Model
         'status'
     ];
 
-    public function userList() {
-        return $this->belongsTo(User::class);
+    public function usersList() {
+        return $this->belongsTo(User::class, 'user_uuid', 'uuid');
+    }
+
+    public function catalogItems()
+    {
+        return $this->hasMany(CatalogItem::class, 'catalog_uuid', 'uuid');
     }
 }
