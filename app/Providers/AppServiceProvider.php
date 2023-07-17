@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         Auth::viaRequest('jwt', function(Request $request) {
             try {
 
-                $tokenPayload = JWT::decode($request->bearerToken(), new Key(config('jwt.key')));
+                $tokenPayload = JWT::decode($request->bearerToken(), new Key(config('jwt.key'), 'HS512'));
 
                 return User::find($tokenPayload)->first();
 

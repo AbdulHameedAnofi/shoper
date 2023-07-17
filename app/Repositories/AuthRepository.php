@@ -14,46 +14,59 @@ use Illuminate\Support\Facades\Log;
 
 class AuthRepository implements AuthRepositoryInterface
 {
-    public function login(UserLoginRequest $request)
+    public function login(array $data)
     {
-        if (User::where('email', $request->email)->exists())
+        if (User::where('email', $data['email'])->exists())
         {
-            $user = User::where('email', $request->email)->first();
-            if (Hash::check($request->password, $user->password))
+            $user = User::where('email', $data['email'])->first();
+            if (!Hash::check($data['password'], $user->password))
             {
-                
+                return [
+                    'status' => false,
+                    'message' => 'Incorrect Email or Password'
+                ];
             }
+            return [
+                'status' => true,
+                'message' => 'User has been logged in',
+                'data' => [
+                    'token' => JWT::encode($user->uuid, 'HS512', config('jwt.key'))
+                ],
+            ];
         }
+        return [
+            'status' => false,
+            'message' => 'Invalid e-mail address'
+        ];
     }
 
-    public function register(UserRegisterRequest $request)
+    public function register(array $data)
     {
         DB::beginTransaction();
         try {
 
             $user = User::create([
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password'])
             ]);
 
             DB::commit();            
 
             return [
-                'sucess' => true,
-                'message' => 'User logged in succesfully',
+                'status' => true,
+                'message' => 'User account created succesfully',
                 'data' => [
                     'token' => JWT::encode($user->uuid, 'HS512', config('jwt.key'))
                 ],
             ];
-
 
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             DB::rollBack();
 
             return [
-                'success' => false,
+                'status' => false,
                 'message' => 'User Registration failed'
             ];
         }
@@ -61,8 +74,22 @@ class AuthRepository implements AuthRepositoryInterface
 
     }
 
+    public function userDetails() {
+        return [
+            'status' => true,
+            'message' => 'Authenticated users details',
+            'data' => [
+                'user' => Auth::user()
+            ]
+        ];
+    }
+
     public function logout()
     {
-        
+        Auth::logout();
+        return [
+            'status' => true,
+            'message' => 'Succesfully Logged user out'
+        ];
     }
 }
