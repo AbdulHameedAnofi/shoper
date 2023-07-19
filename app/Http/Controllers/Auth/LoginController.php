@@ -19,4 +19,9 @@ class LoginController extends Controller
     {
         return $this->authRepository->login($request->validated());
     }
+
+    public function usersData()
+    {
+        return $this->authRepository->userDetails();
+    }
 }

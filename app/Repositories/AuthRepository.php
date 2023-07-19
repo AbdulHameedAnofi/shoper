@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use App\Repositories\Contracts\AuthRepositoryInterface;
 use Firebase\JWT\JWT;
@@ -26,11 +24,12 @@ class AuthRepository implements AuthRepositoryInterface
                     'message' => 'Incorrect Email or Password'
                 ];
             }
+            // return $user;
             return [
                 'status' => true,
                 'message' => 'User has been logged in',
                 'data' => [
-                    'token' => JWT::encode($user->uuid, 'HS512', config('jwt.key'))
+                    'token' => JWT::encode([$user->id], config('jwt.secret'), 'HS256')
                 ],
             ];
         }
@@ -42,7 +41,7 @@ class AuthRepository implements AuthRepositoryInterface
 
     public function register(array $data)
     {
-        DB::beginTransaction();
+        // DB::beginTransaction();
         try {
 
             $user = User::create([
@@ -51,30 +50,32 @@ class AuthRepository implements AuthRepositoryInterface
                 'password' => Hash::make($data['password'])
             ]);
 
-            DB::commit();            
-
+            // DB::commit();
             return [
                 'status' => true,
                 'message' => 'User account created succesfully',
                 'data' => [
-                    'token' => JWT::encode($user->uuid, 'HS512', config('jwt.key'))
+                    'token' => JWT::encode([$user->id], config('jwt.key'), 'HS256')
                 ],
             ];
 
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
-            DB::rollBack();
+            // DB::rollBack();
 
             return [
                 'status' => false,
-                'message' => 'User Registration failed'
+                'message' => "Unable to create user account: ".$th->getMessage()
             ];
         }
+                    
+        return $user;
 
 
     }
 
-    public function userDetails() {
+    public function userDetails() 
+    {
         return [
             'status' => true,
             'message' => 'Authenticated users details',
