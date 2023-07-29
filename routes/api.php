@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\FileController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
@@ -27,6 +28,10 @@ Route::prefix('auth')->group(function() {
 });
 
 Route::get('/user', [LoginController::class, 'usersData']);
+
+// Route::('/items' );
+
+Route::post('/uploadFile', [FileController::class, 'upload']);
 
 Route::get('/users', function(Request $request) {
     return JWT::decode($request->Bearer, new Key(config('jwt.secret'), 'HS256'));
